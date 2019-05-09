@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+use App\Buku;
+use DB;
 class BookController extends Controller
 {
     /**
@@ -57,7 +59,10 @@ class BookController extends Controller
      */
     public function edit($id)
     {
-        //
+        // mengambil data pegawai berdasarkan id yang dipilih
+        $buku = DB::table('bukus')->where('id',$id)->get();
+        // passing data pegawai yang didapat ke view edit.blade.php
+        return view('edit',['buku' => $buku]);
     }
     /**
      * Update the specified resource in storage.
@@ -66,9 +71,17 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        /// update data pegawai
+    	DB::table('bukus')->where('id',$request->id)->update([
+        'judul' => $request->judul,
+        'penerbit' => $request->penerbit,
+        'tahun_terbit' => $request->tahun_terbit,
+        'pengarang' => $request->pengarang
+    	]);
+    	// alihkan halaman ke halaman pegawai
+    	return redirect('/books');
     }
     /**
      * Remove the specified resource from storage.
@@ -78,6 +91,17 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        //
+      /*
+      $book = \app\Buku::find($id);
+      $book->destroy();
+      return redirect('books')->with('success','Data buku telah di hapus');
     }
+
+    */// method untuk hapus data pegawai
+    $posts = Buku::find($id);
+
+        $posts->delete();
+        return back()->with('succes', 'deleted data');
+      }
+
 }
